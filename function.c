@@ -1,0 +1,3 @@
+void nofplayerselection (int n) {
+
+}
