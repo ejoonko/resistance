@@ -59,13 +59,47 @@ void selection_phase() {
 }
 
 void voting_phase() {
-
+  for (int n = 0; n < nofplayer; n++) {
+    display_image();
+    vote_selection();
+    yesvotes += vote_selection();
+  }
+  if (yesvotes > (nofplayer / 2)) {
+    //go to mission phase
+    node_rejected = 0;
+  } else {
+    //go to selection phase
+    node_rejected++;
+  }
 }
 
 void mission_phase() {
+  for (int n = 0; n < getnode(nodeposition)) {
+    if (playerarray[PLAYER] == 0) {
+      hacked += mission_agent();
+    } else {
+      hacked += mission_hacker();
+    }
+  }
+  if (hacked > 0) {
+    //display hacked
+    //display how many people hacked node
+    hacker_score++;
+  } else {
+    //display secured
+    agent_score++;
+  }
 
+  if (agent_score == 3) {
+    //end game agent victory
+  } else if (hacker_score == 3){
+    //end game hacker victory
+  } else {
+    //go to talking_phase
+    nodeposition++;
+  }
 }
 
 void end() {
-
+  victory_defeat();
 }

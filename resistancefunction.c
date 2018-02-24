@@ -6,6 +6,10 @@ void information_display() {//Displays information
   display_update();
 }
 
+void phase_movement(int n) {
+
+}
+
 /*Player select phase*/
 int nofplayerselect() { //Select n of players
   int btn;
@@ -43,7 +47,7 @@ int playerselection() { //Select n of players
 
 
 /*voting phase*/
-int vote_yes() {
+int vote_selection() {
   if (getbtns() == 2) {
     return 1;
   }
@@ -58,23 +62,23 @@ int vote_yes() {
 /*mission phase*/
 int mission_agent() {
   if (getbtns() == 2) {
-    return 1;
+    return 0;
   }
 
   if (ticktock() == 0) {
-    return 1;
+    return 0;
   }
 }
 
 int mission_hacker() {
   if (getbtns() == 2) {
-    return 1;
+    return 0;
   }
   if (getbtns() == 1) {
-    return 0;
+    return 1;
   }
   if (ticktock() == 0) {
-    return 0;
+    return 1;
   }
 }
 
