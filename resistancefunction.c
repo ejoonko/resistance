@@ -1,4 +1,5 @@
 #include "gamedata.h"
+#include "mipslab.h"
 
 /*Overall functions*/
 void information_display() {//Displays information
@@ -27,27 +28,27 @@ int getnode(int n) {
 /*Player reveal phase*/
 void player_reveal(int a_or_h) {//reveals player_n's role
 while(1) {
-    while(getbtns() == 1) { //confirm button(BTN2)
-      if (playerarray[a_or_h] == 1) {
-        display_image(hacker);
-        display_update();
-      } else {
-        display_image(agent);
-        display_update();
-      }
+  while(getbtns() == 1) { //confirm button(BTN2)
+    if (playerarray[a_or_h] == 1) {
+      display_image(hacker);
+      display_update();
+    } else {
+      display_image(agent);
+      display_update();
     }
   }
+}
 }
 
 /*Talking phase*/
 
 /*Selection phase*/
 int playerselection() { //Select n of players
-    if(getbtns() == 1) { //confirm button(BTN2)
-      if (getsw() > 0 && getsw() < (nofplayer + 1)) {
-        return getsw();
-      }
+  if(getbtns() == 1) { //confirm button(BTN2)
+    if (getsw() > 0 && getsw() < (nofplayer + 1)) {
+      return getsw();
     }
+  }
   return -1;
 }
 

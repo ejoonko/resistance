@@ -1,5 +1,6 @@
 #include <math.h>
 #include "gamedata.h"
+#include "mipslab.h"
 
 int player_select_phase() { //phase 0
   nofplayer = nofplayerselect();
@@ -86,9 +87,11 @@ int voting_phase() { //phase 5
   }
   if (yesvotes > (nofplayer / 2)) {
     node_rejected = 0;
+    *porte = porte & 0xF0;
     return 6; //go to mission phase
   } else {
     node_rejected++;
+    *porte += pow(2, node_rejected - 1);
     return 4; //go to selection phase
   }
 
@@ -117,6 +120,7 @@ int mission_phase() { //phase 6
     //display secured
     //display how many people hacked node
     agent_score++;
+    *porte += pow(2, 7 - nodeposition);
   }
   hacked = 0;
 
