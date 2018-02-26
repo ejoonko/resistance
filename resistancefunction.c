@@ -6,10 +6,6 @@ void information_display() {//Displays information
   display_update();
 }
 
-void phase_movement(int n) {
-
-}
-
 /*Player select phase*/
 int nofplayerselect() { //Select n of players
   int btn;
@@ -23,14 +19,24 @@ int nofplayerselect() { //Select n of players
   return 0;
 }
 
+int getnode(int n) {
+  /*setting up node numbers*/
+  return nodes[(nofplayer - 5) * 5];
+}
+
 /*Player reveal phase*/
 void player_reveal(int a_or_h) {//reveals player_n's role
 while(1) {
-  while(getbtns() == 1) { //confirm button(BTN2)
-    display_image();
-    display_update();
+    while(getbtns() == 1) { //confirm button(BTN2)
+      if (playerarray[a_or_h] == 1) {
+        display_image(hacker);
+        display_update();
+      } else {
+        display_image(agent);
+        display_update();
+      }
+    }
   }
-}
 }
 
 /*Talking phase*/

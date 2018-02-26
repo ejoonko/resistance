@@ -1,17 +1,12 @@
 #include <math.h>
 #include "gamedata.h"
 
-void player_select_phase() {
-  nofplayerselect();
+int player_select_phase() { //phase 0
   nofplayer = nofplayerselect();
+  return 1;
 }
 
-int getnode(int n) {
-  /*setting up node numbers*/
-  return nodes[(nofplayer - 5) * 5];
-}
-
-void game_setup() {
+int game_setup() { //phase 1
   /*making array for players*/
   int [nofplayer] player;
   playerarray = player;
@@ -24,82 +19,118 @@ void game_setup() {
   }
   int n = 0;
   while (nofhacker > 0) {
-    if (playerarray[n] == 0) {
-      playerarray[n] = rand() % 2;
+    if (playerarray[n % 5] == 0) {
+      playerarray[n % 5] = rand() % 2;
       if (playerarray[n]) {
         nofhacker--;
       }
     }
     n++;
   }
+
+  return 2;
 }
 
-void player_reveal_phase() {
+int getnode(int n) {
+  /*setting up node numbers*/
+  return nodes[((nofplayer - 5) * 5) + n];
+}
+
+int player_reveal_phase() { //phase 2
   for (int n = 0; n < nofplayer; n++) {
     player_reveal(n);
   }
+
+  return 3;
 }
 
-void talking_phase() {
+int talking_phase() { //phase 3
   while(ticktock != 0) {
     display_image();
   }
+
+  return 4;
 }
 
-void selection_phase() {
-  while(selectiondone != getnode(nodeposition)) {
-    while((selectiondone != getnode(nodeposition)) & (ticktock != 0)) {
-      display_image(PLAYER);
-      for (int n = 0; n < getnode(nodeposition); n++) {
-        playerselection();
-        selectiondone++;
-      }
-    }
+int selection_phase() { //phase 4
+  if (node_rejected > 4) {
+    return 7;
   }
+
+  int [nodes[nodeposition]] tempmissionarray;
+
+  while (selectiondone != sizeof(tempmissionarray)) {
+    while (selectiondone != sizeof(tempmissionarray) | ticktock() != 0) {
+      display_image(playerposition);
+      display_update();
+      tempmissionarray[selectiondone] = playerselection();
+      selectiondone++;
+    }
+    playerposition =  (playerposition + 1) % 5;
+    if (ticktock == 0) {
+      selectiondone = 0;
+    }
+    //reset clock
+  }
+  selectiondone = 0;
+  missionarray = tempmissionarray;
+
+  return 5;
 }
 
-void voting_phase() {
+int voting_phase() { //phase 5
   for (int n = 0; n < nofplayer; n++) {
     display_image();
     vote_selection();
     yesvotes += vote_selection();
   }
   if (yesvotes > (nofplayer / 2)) {
-    //go to mission phase
     node_rejected = 0;
+    return 6; //go to mission phase
   } else {
-    //go to selection phase
     node_rejected++;
+    return 4; //go to selection phase
   }
+
+  //return 6;
 }
 
-void mission_phase() {
+int mission_phase() { //phase 6
   for (int n = 0; n < getnode(nodeposition)) {
-    if (playerarray[PLAYER] == 0) {
+    if (playerarray[missionarray[n] - 1] == 0) {
       hacked += mission_agent();
     } else {
       hacked += mission_hacker();
     }
   }
-  if (hacked > 0) {
+
+  int required_hack = 1;
+  if ((nofplayer > 6) && (nodeposition == 3)) {
+    required_hack = 2;
+  }
+
+  if (hacked >= required_hack) {
     //display hacked
     //display how many people hacked node
     hacker_score++;
   } else {
     //display secured
+    //display how many people hacked node
     agent_score++;
   }
+  hacked = 0;
 
   if (agent_score == 3) {
-    //end game agent victory
+    return 7;
   } else if (hacker_score == 3){
-    //end game hacker victory
+    return 7;
   } else {
-    //go to talking_phase
+    return 3;
     nodeposition++;
   }
 }
 
-void end() {
+int end() { //phase 7
   victory_defeat();
+  return 8;
 }
