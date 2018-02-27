@@ -1,0 +1,2 @@
+resistancefunction.c.o: resistancefunction.c gamedata.h
+resistancefunction.c gamedata.h :

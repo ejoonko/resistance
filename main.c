@@ -3,6 +3,12 @@
 int p = 0;
 
 int main() {
+  labinit();
+
+  /*while (1) {
+    myclock(60);
+  }*/
+
   while(p != 8) {
     switch(p) {
       case 0: //player n select phase

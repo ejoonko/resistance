@@ -1,0 +1,6 @@
+init.c.o: init.c \
+ /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/pic32mx.h \
+ gamedata.h
+init.c :
+ /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/pic32mx.h :
+ gamedata.h :
