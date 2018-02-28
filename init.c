@@ -89,15 +89,12 @@ void labinit( void ) {
   //volatile int* portd = (volatile int*) 0xbf8860D0;
   TRISE &= 0;
   PORTD |= 0xFE0;
-  //PR2 = TMR2PERIOD;
-  //TMR2 = 0;
-  //T2CON = 0x8070;
-  //IFSCLR(0) = 0x00000000;
-  //IECSET(0) = 0x00000900;
-  //IPCSET(2) = 0x0A00000D;
-  //INTCON = 0x4;
+  PR2 = TMR2PERIOD;
+  TMR2 = 0;
+  IFSCLR(0) = 0x00000100;
+  IECSET(0) = 0x00000100;
+  T2CON = 0x8070;
 
-  enable_interrupt();
   spi_init();
   display_init();
   return;

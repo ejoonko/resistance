@@ -1,4 +1,5 @@
 #include "gamedata.h"
+#include <pic32mx.h>
 
 /*Overall functions*/
 
@@ -29,21 +30,36 @@ int getbtns(void) {
 }
 
 /*void information_display() {//Displays information
-  display_image();
-  display_update();
+display_image();
+display_update();
 }*/
-
 int myclock(int x) {
-  mytime = 0x0000;
-  int n;
-  for (n = 0; n < x; n++){
-    tick(&mytime);
-    time2string(string, abs(mytime - x));
-    display_string(0, string);
-    display_update();
+  mytime = 0x0060;
+  int n = 0;
+  int count = 0;
+  while (n < x) {
+    if (((IFS(0) & 0x100) >> 8) == 1) {
+      IFSCLR(0) = 0x00000100;
+      count++;
+      if (count == 10) {
+        time2string( string, mytime);
+        tick( &mytime );
+        display_string( 0, string );
+        display_update();
+        count = 0;
+        n++;
+      }
+    }
   }
   return 0;
+}
 
+void reset_display() {
+  display_string( 0, "" );
+  display_string( 1, "" );
+  display_string( 2, "" );
+  display_string( 3, "" );
+  display_update();
 }
 
 /*Player select phase*/

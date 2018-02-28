@@ -44,7 +44,7 @@ void tick( unsigned int * timep )
 {
   /* Get current value, store locally */
   register unsigned int t = * timep;
-  t += 1; /* Increment local copy */
+  t -= 1; /* Increment local copy */
 
   /* If result was not a valid BCD-coded time, adjust now */
 
