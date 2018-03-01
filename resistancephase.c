@@ -3,12 +3,12 @@
 #include "gamedata.h"
 
 int nofplayer;
-int* playerarray;
+int playerarray[8];
 int nofhacker;
 int selectiondone = 0;
 int nodeposition = 0;
 int playerposition = 0;
-int* missionarray;
+int missionarray[5];
 int yesvotes = 0;
 int node_rejected = 0;
 int hacked = 0;
@@ -31,14 +31,16 @@ int mytime = 0x0000;
 char nofplayerstring1[] = "Please select the number of players";
 char nofplayerstring2[] = "5, 6, 7, 8";
 
-char* revealstring;
+char revealstring[] = "PLAYER  ";
 char agentreveal[] = "You are a agent!";
-char* hackerreveal;
+char hackerreveal[] = "          ";
 char arehackers[] = " are hackers!";
 
+char talking_phase_string[] = "Talking Phase";
+
 char useswitches[] = "Use switches";
-char* player_select_string;
-char* display_p_string;
+char player_select_string[] = "PLAYER   SELECT";
+char display_p_string[] = "               ";
 
 char* votestring;
 void votestring_builder();
@@ -50,6 +52,7 @@ char agent_victory[] = "AGENTS VICTORY!";
 char hacker_victory[] = "HACKERS VICTORY!";
 
 int player_select_phase() { //phase 0
+  reset_display();
   display_string(1, nofplayerstring1);
   display_string(2, nofplayerstring2);
   display_update();
@@ -59,8 +62,8 @@ int player_select_phase() { //phase 0
 
 int game_setup() { //phase 1
   /*making array for players*/
-  int player [nofplayer];
-  playerarray = player;
+  //int player [nofplayer];
+  //playerarray = player;
 
   /*assigning agents and hackers*/
   if (nofplayer > 6) {
@@ -68,18 +71,22 @@ int game_setup() { //phase 1
   } else {
     nofhacker = 2;
   }
-  int n = 0;
-  while (nofhacker > 0) {
-    if (playerarray[n % 5] == 0) {
-      playerarray[n % 5] = rand() % 2;
-      if (playerarray[n]) {
-        nofhacker--;
-      }
-    }
-    n++;
+  int n;
+
+  for (n = 0; n < nofhacker; n++) {
+    playerarray[n] = 1;
   }
 
-  return 2;
+  /*while (nofhacker > 0) {
+  if (playerarray[n % nofplayer] == 0) {
+  playerarray[n % nofplayer] = rand() % 2;
+} else if (playerarray[n % nofplayer] == 1){
+nofhacker--;
+}
+n++;
+}*/
+
+return 2;
 }
 
 int getnode(int n) {
@@ -97,7 +104,9 @@ int player_reveal_phase() { //phase 2
 }
 
 int talking_phase() { //phase 3
-  while(myclock((nodeposition + 1) * 15) != 0) { //can be changed
+  reset_display();
+  display_string(2, talking_phase_string);
+  while(myclock(20) != 0) { //can be changed
     display_update();
   }
 
@@ -105,38 +114,42 @@ int talking_phase() { //phase 3
 }
 
 int selection_phase() { //phase 4
-  display_p_string = 0;
   if (node_rejected > 4) {
     return 7;
   }
+  int x = 0;
+  int n = 0;
+  player_select_string_builder();
+  reset_display();
 
-  int tempmissionarray [nodes[nodeposition]];
 
-  while (selectiondone != (sizeof(tempmissionarray)/sizeof(tempmissionarray[0]))) {
-    while (selectiondone != (sizeof(tempmissionarray)/sizeof(tempmissionarray[0])) | myclock(60) != 0) {
-      display_string(1, player_select_string);
-      display_string(2, useswitches);
-      display_string(3, display_p_string);
-      display_update();
-      tempmissionarray[selectiondone] = playerselection();
-      selectiondone++;
-    }
-    playerposition =  (playerposition + 1) % 5;
-    if (myclock(60) == 0) {
-      selectiondone = 0;
-    }
-    mytime = 0x0000;
+  while (selectiondone != getnode(nodeposition)/* | myclock(60) != 0*/) {
+    display_string(1, player_select_string);
+    display_string(2, useswitches);
+    display_update();
+    x = playerselection();
+    selectiondone++;
+    display_p_string_builder(x); //works
+    n++;
+    display_string(3, display_p_string);
+    display_update();
+    missionarray[selectiondone] = x;
   }
+  playerposition =  (playerposition + 1) % 5;
+  /*if (myclock(60) == 0) {
   selectiondone = 0;
-  missionarray = tempmissionarray;
+}*/
+//mytime = deci2hexa(60);
+selectiondone = 0;
 
-  return 5;
+return 5;
 }
 
 int voting_phase() { //phase 5
   votestring_builder();
   int n;
   for (n = 0; n < nofplayer; n++) {
+    reset_display();
     display_string(1, votestring);
     display_string(3, acceptrefuse);
     vote_selection();
