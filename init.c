@@ -94,6 +94,7 @@ void labinit( void ) {
   IFSCLR(0) = 0x00000100;
   IECSET(0) = 0x00000100;
   T2CON = 0x8070;
+  T3CON = 0x8000;
 
   spi_init();
   display_init();

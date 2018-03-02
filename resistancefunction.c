@@ -8,11 +8,15 @@ int rand(void) {
   return (int) TMR3;
 }
 
-int pow(int x, int y) {
+int pow2(int x, int y) {
+  int n;
   if (y == 0) {
     return 1;
   }
-  return x * pow(x, y - 1);
+  for (n = 0; n < y - 1; n++) {
+    x = x * 2;
+  }
+  return x;
 }
 
 int abs(int x) {
@@ -58,10 +62,29 @@ int myclock(int x) {
     if (((IFS(0) & 0x100) >> 8) == 1) {
       IFSCLR(0) = 0x00000100;
       count++;
-      if (count == 2) {
+      if (count == 5) {
         time2string( string, mytime);
         tick( &mytime );
         display_string( 0, string );
+        display_update();
+        count = 0;
+        n++;
+      }
+    }
+  }
+  return 0;
+}
+
+int invmyclock(int x) {
+  mytime = deci2hexa(x);
+  int count = 0;
+  int n = 0;
+  while (n < x + 1) {
+    if (((IFS(0) & 0x100) >> 8) == 1) {
+      IFSCLR(0) = 0x00000100;
+      count++;
+      if (count == 5) {
+        tick( &mytime );
         display_update();
         count = 0;
         n++;
@@ -84,6 +107,10 @@ void player_select_string_builder(int n) {
   player_select_string[7] = ((char) (n + 1 + 48));
 }
 
+void amount2select_builder(int n) {
+  amount2select[7] = ((char) (n + 48));
+}
+
 void display_p_string_builder(int n) {
   display_p_string [0 + (p_constant * 3)] = ((char) (n + 48));
   display_p_string [1 + (p_constant * 3)] = ',';
@@ -91,8 +118,17 @@ void display_p_string_builder(int n) {
   p_constant = (p_constant + 1) % getnode(nodeposition);
 }
 
+void display_p_string_reset() {
+  int n;
+  for (n = 0; n < 5; n++) {
+    display_p_string [0 + (n * 3)] = (char) 0;
+    display_p_string [1 + (n * 3)] = (char) 0;
+    display_p_string [2 + (n * 3)] = (char) 0;
+  }
+}
+
 int nofplayerselect() { //Select n of players
-int x = 0;
+  int x = 0;
   while(1) {
     while(getbtns() == 1) { //confirm button(BTN2)
       if (getsw() > 4 && getsw() < 9) {
@@ -113,11 +149,13 @@ void revealstring_builder(int n) {
 
 void hackerreveal_builder() {
   int n;
+  int x = 0;
   for (n = 0; n < nofplayer; n++) {
     if (playerarray[n] == 1) {
-      hackerreveal[0 + (n * 3)] = ((char) (n + 1 + 48));
-      hackerreveal[1 + (n * 3)] = ',';
-      hackerreveal[2 + (n * 3)] = ' ';
+      hackerreveal[0 + (x * 3)] = ((char) (n + 1 + 48));
+      hackerreveal[1 + (x * 3)] = ',';
+      hackerreveal[2 + (x * 3)] = ' ';
+      x++;
     }
   }
 }
@@ -170,76 +208,99 @@ int vote_selection() {
   int x = 2;
   while (1) {
     display_update();
-    if (getbtns() == 2) {
-      x = 1;
-    }
-    if (getbtns() == 1) {
+    while (getbtns() == 1) {
       x = 0;
     }
-    /*if (myclock(15) == 0) {
-      return 1;
-    }*/
-    if (x < 2) {
-      return x;
+
+    while (getbtns() == 2 ) {
+      x = 1;
     }
+    /*if (myclock(15) == 0) {
+    return 1;
+  }*/
+  if (x < 2) {
+    return x;
   }
+}
 }
 
 void votestring_builder() {
-  char tempvotestring [32] = "Vote for ";
-
   int n;
-  for (n = 0; n < nodes[nodeposition]; n++) {
-    tempvotestring[9 + (3 * n)] = ((char) (missionarray[n] + 48));
-    tempvotestring[10 + (3 * n)] = ',';
-    tempvotestring[11 + (3 * n)] = ' ';
+  for (n = 0; n < getnode(nodeposition); n++) {
+    votestring [0 + (n * 2)] = ((char) (missionarray[n] + 48));
+    votestring [1 + (n * 2)] = ',';
+    //  votestring [2 + (n * 3)] = ' ';
   }
-  tempvotestring[12 + (3 * n)] = ' ';
-  tempvotestring[13 + (3 * n)] = 'b';
-  tempvotestring[14 + (3 * n)] = 'y';
-  tempvotestring[15 + (3 * n)] = ' ';
-  tempvotestring[16 + (3 * n)] = ((char) (playerposition - 1 + 48));
+  votestring[14] = (char) (playerposition + 1 + 48);
+}
 
-  votestring = tempvotestring;
+void votestring_reset() {
+  int n;
+  for (n = 0; n < 5; n++) {
+    votestring [0 + (n * 2)] = ' ';
+    votestring [1 + (n * 2)] = ' ';
+  }
 }
 
 /*mission phase*/
-int mission_agent() {
+int mission_agent(int n) {
+  int x = 0;
+
+  revealstring_builder(n - 1);
   reset_display();
+  display_string(1, revealstring);
   display_string(2, securehack);
   display_update();
+
   while (1) {
-    if (getbtns() == 2 | myclock(10) == 0) {
+    while (getbtns() == 2) {
+      x = 1;
+    }
+
+    if (x > 0) {
       return 0;
     }
   }
 }
 
-int mission_hacker() {
+int mission_hacker(int n) {
+  int x = 0;
+
+  revealstring_builder(n - 1);
   reset_display();
+  display_string(1, revealstring);
   display_string(2, securehack);
   display_update();
 
   while (1) {
-    if (getbtns() == 2) {
-      return 0;
-    } else if (getbtns() == 1 | myclock(10) == 0) {
-      return 1;
+    while (getbtns() == 2) {
+      x = 1;
+    }
+
+    while (getbtns() == 1) {
+      x = 2;
+    }
+
+    if (x > 0) {
+      return x - 1;
     }
   }
+}
+
+amountofhack_builder(int n) {
+  amountofhack[0] = (char) (n + 48);
 }
 
 /*victory/defeat title phase*/
 void victory_defeat() {
-  while (myclock(20) != 0) {
-    if (hacker_score == 3) {
+    if (hacker_score == 3 | node_rejected == 5) {
       reset_display();
       display_string(1, hacker_victory);
+      display_string(3, hackerreveal);
       display_update();
     } else {
       reset_display();
       display_string(1, agent_victory);
       display_update();
     }
-  }
 }

@@ -36,6 +36,7 @@ extern int mytime;
 /*n of Player select phase*/
 extern char nofplayerstring1[];
 extern char nofplayerstring2[];
+extern char amount2select[];
 
 /*reveal printing*/
 extern char revealstring[];
@@ -50,12 +51,15 @@ extern char display_p_string[];
 
 
 /*Vote printing*/
-extern char* votestring;
+extern char votestring[];
 void votestring_builder();
 extern char acceptrefuse[];
+extern char voteaccepted[];
+extern char voterejected[];
 
 /*mission printing*/
 extern char securehack[];
+extern char amountofhack[];
 
 /*end phase printing*/
 extern char agent_victory[];
