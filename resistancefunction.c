@@ -35,8 +35,18 @@ int getbtns(void) {
 }
 
 /*void information_display() {//Displays information
-display_image();
+int x = 0;
+while (1) {
+display_string(1, agent_victory);
+while (getbtns() == 4) {
+x = 1;
 display_update();
+}
+if (x > 0) {
+reset_display();
+return;
+}
+}
 }*/
 
 int deci2hexa (int x) {
@@ -144,7 +154,7 @@ int nofplayerselect() { //Select n of players
 /*Player reveal phase*/
 
 void revealstring_builder(int n) {
-  revealstring[7] = ((char) (n + 1 + 48));
+  revealstring[11] = ((char) (n + 1 + 48));
 }
 
 void hackerreveal_builder() {
@@ -152,9 +162,9 @@ void hackerreveal_builder() {
   int x = 0;
   for (n = 0; n < nofplayer; n++) {
     if (playerarray[n] == 1) {
-      hackerreveal[0 + (x * 3)] = ((char) (n + 1 + 48));
-      hackerreveal[1 + (x * 3)] = ',';
-      hackerreveal[2 + (x * 3)] = ' ';
+      hackerreveal[4 + (x * 3)] = ((char) (n + 1 + 48));
+      hackerreveal[5 + (x * 3)] = ',';
+      hackerreveal[6 + (x * 3)] = ' ';
       x++;
     }
   }
@@ -190,6 +200,7 @@ while(1) {
 /*Selection phase*/
 int playerselection() { //Select n of players
   int x = 0;
+  int n;
   while(1) {
     while(getbtns() == 1) { //confirm button(BTN2)
       if (getsw() > 0 && getsw() <= nofplayer) {
@@ -293,14 +304,14 @@ amountofhack_builder(int n) {
 
 /*victory/defeat title phase*/
 void victory_defeat() {
-    if (hacker_score == 3 | node_rejected == 5) {
-      reset_display();
-      display_string(1, hacker_victory);
-      display_string(3, hackerreveal);
-      display_update();
-    } else {
-      reset_display();
-      display_string(1, agent_victory);
-      display_update();
-    }
+  if (hacker_score == 3 | node_rejected == 5) {
+    reset_display();
+    display_string(1, hacker_victory);
+    display_string(3, hackerreveal);
+    display_update();
+  } else {
+    reset_display();
+    display_string(1, agent_victory);
+    display_update();
+  }
 }

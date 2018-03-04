@@ -31,12 +31,12 @@ int mytime = 0x0000;
 char nofplayerstring1[] = " Player Amount?";
 char nofplayerstring2[] = "   5, 6, 7, 8";
 
-char revealstring[] = "PLAYER  ";
+char revealstring[] = "    PLAYER  ";
 char agentreveal[] = "You are a agent!";
-char hackerreveal[] = "          ";
-char arehackers[] = " are hackers!";
+char hackerreveal[] = "              ";
+char arehackers[] = "  are hackers!";
 
-char talking_phase_string[] = "Talking Phase";
+char talking_phase_string[] = " Talking Phase";
 
 char useswitches[] = "Use switches";
 char player_select_string[] = "PLAYER   SELECT";
@@ -44,13 +44,13 @@ char display_p_string[] = "               ";
 char amount2select[] = "Select   players";
 
 char votestring[] = "           by  ";
-char acceptrefuse[] = "ACCEPT REFUSE";
-char voteaccepted[] = "NODE ACCEPTED";
-char voterejected[] = "NODE REJECTED";
+char acceptrefuse[] = " ACCEPT REFUSE";
+char voteaccepted[] = " NODE ACCEPTED";
+char voterejected[] = " NODE REJECTED";
 
-char securehack[] = "SECURE HACK";
-char securedmessage[] = "SECURED!";
-char hackedmessage[] = "HACKED!";
+char securehack[] = "  SECURE HACK";
+char securedmessage[] = "    SECURED!";
+char hackedmessage[] = "    HACKED!";
 char amountofhack[] = "  hacker found";
 
 char agent_victory[] = "AGENTS VICTORY!";
