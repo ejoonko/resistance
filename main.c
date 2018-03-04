@@ -1,17 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
-int p = 0;
+int p = -1;
 
 int main() {
   labinit();
   reset_display();
 
-  /*while (1) {
-    myclock(120);
-  }*/
-
   while(p != 8) {
     switch(p) {
+      case -1: /*Showing title of game*/
+      p = title_phase();
+      break;
+
       case 0: //player n select phase
       p = player_select_phase();
       break;
